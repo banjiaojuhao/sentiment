@@ -31,6 +31,6 @@ run_interval = "30s"
 refresh_interval = "1d"
 
 [store.mysql]
-url = "jdbc:mysql://localhost:3306/sentiment2"
+url = "jdbc:mysql://localhost:3306/sentiment"
 username = "root"
 password = "pwdofmysql8!"

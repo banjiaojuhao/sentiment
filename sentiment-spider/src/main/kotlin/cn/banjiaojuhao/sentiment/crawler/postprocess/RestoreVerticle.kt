@@ -1,6 +1,6 @@
 package cn.banjiaojuhao.sentiment.crawler.postprocess
 
-import cn.banjiaojuhao.sentiment.crawler.persistence.external.ArticleTable
+import cn.banjiaojuhao.sentiment.persistence.ArticleTable
 import cn.banjiaojuhao.sentiment.crawler.persistence.external.StoreConnection
 import cn.banjiaojuhao.sentiment.crawler.persistence.internal.*
 import cn.banjiaojuhao.sentiment.crawler.persistence.internal.TiebaPostTable.threadId
@@ -40,7 +40,7 @@ class RestoreVerticle : CoroutineVerticle() {
         val dataSet: List<ResultRow> = CacheConnection.execute {
             val updatedItems = TiebaPostTable.updatePatch({
                 (TiebaPostTable.syncTime greaterEq 0L) and
-                    (TiebaPostTable.threadId inSubQuery filterPassThreadId)
+                    (threadId inSubQuery filterPassThreadId)
             }, 1000) {
                 it[syncTime] = updateTag
             }

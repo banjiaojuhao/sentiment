@@ -2,6 +2,9 @@ package cn.banjiaojuhao.sentiment.crawler.persistence.external
 
 import cn.banjiaojuhao.sentiment.crawler.config.MyConfig
 import cn.banjiaojuhao.sentiment.crawler.config.store
+import cn.banjiaojuhao.sentiment.persistence.ArticleTable
+import cn.banjiaojuhao.sentiment.persistence.SentenceWordsTable
+import cn.banjiaojuhao.sentiment.persistence.WordsTable
 import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.withContext
 import org.jetbrains.exposed.sql.Database

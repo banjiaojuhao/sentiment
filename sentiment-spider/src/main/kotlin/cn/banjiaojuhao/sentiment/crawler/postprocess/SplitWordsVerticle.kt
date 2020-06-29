@@ -1,9 +1,9 @@
 package cn.banjiaojuhao.sentiment.crawler.postprocess
 
-import cn.banjiaojuhao.sentiment.crawler.persistence.external.ArticleTable
-import cn.banjiaojuhao.sentiment.crawler.persistence.external.SentenceWordsTable
+import cn.banjiaojuhao.sentiment.persistence.ArticleTable
+import cn.banjiaojuhao.sentiment.persistence.SentenceWordsTable
 import cn.banjiaojuhao.sentiment.crawler.persistence.external.StoreConnection
-import cn.banjiaojuhao.sentiment.crawler.persistence.external.WordsTable
+import cn.banjiaojuhao.sentiment.persistence.WordsTable
 import io.vertx.ext.web.client.WebClient
 import io.vertx.kotlin.core.json.jsonObjectOf
 import io.vertx.kotlin.coroutines.CoroutineVerticle

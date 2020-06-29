@@ -4,6 +4,7 @@ import cn.banjiaojuhao.sentiment.backend.config.MyConfig
 import cn.banjiaojuhao.sentiment.backend.config.getInterval
 import cn.banjiaojuhao.sentiment.backend.config.login
 import cn.banjiaojuhao.sentiment.backend.persistence.*
+import cn.banjiaojuhao.sentiment.persistence.*
 import io.vertx.core.json.JsonArray
 import io.vertx.core.json.JsonObject
 import io.vertx.kotlin.core.json.jsonArrayOf
@@ -104,7 +105,7 @@ class BackendVerticle : CoroutineVerticle() {
         handlerWrapper("backend.user.info") { params ->
             val token = params.getString("token")
             val resultRow = DBConnection.execute {
-                LoginSession.leftJoin(UserBasicInfo, { LoginSession.username }, { UserBasicInfo.username })
+                LoginSession.leftJoin(UserBasicInfo, { username }, { username })
                     .select {
                         LoginSession.sessionId eq token
                     }.firstOrNull()
@@ -297,7 +298,7 @@ class BackendVerticle : CoroutineVerticle() {
             val colCount = Count(SentenceWordsTable.id)
             val resultSet = DBConnection.execute {
                 SentenceWordsTable
-                    .leftJoin(WordsTable, { SentenceWordsTable.wordId }, { WordsTable.id })
+                    .leftJoin(WordsTable, { wordId }, { WordsTable.id })
                     .slice(WordsTable.word,
                         colCount)
                     .select {
