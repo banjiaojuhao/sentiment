@@ -1,0 +1,7 @@
+*_time fields are used to represent states of * action:
+value   state
+-1      finished
+>=0     processing/timeout
+
+System.currentTimeMillis() - $value > Timeout represents timeout.
+value is set to System.currentTimeMillis() when starting processing.

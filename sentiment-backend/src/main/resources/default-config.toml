@@ -1,0 +1,7 @@
+# interval formats(day/hour/minute/second): 1.5d/3h/25m/33s
+[store.mysql]
+username = "root"
+password = "pwdofmysql8!"
+
+[login.session]
+expire = "30d"

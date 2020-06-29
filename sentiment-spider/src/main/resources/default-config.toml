@@ -1,0 +1,36 @@
+# interval formats(day/hour/minute/second): 1.5d/3h/25m/33s
+[tieba.thread]
+run_interval = "1d"
+keywords = [
+    "高考",
+    "九八五",
+    "双一流",
+    "哈尔滨工业大学"
+]
+
+[tieba.post]
+run_interval = "30s"
+
+[tieba.thread.filter]
+run_interval = "1m"
+
+[tieba.comment]
+run_interval = "30s"
+# scan all comment
+refresh_interval = "1d"
+
+[zhihu.topic]
+run_interval = "1d"
+
+[zhihu.answer]
+run_interval = "30s"
+refresh_interval = "1d"
+
+[zhihu.comment]
+run_interval = "30s"
+refresh_interval = "1d"
+
+[store.mysql]
+url = "jdbc:mysql://localhost:3306/sentiment2"
+username = "root"
+password = "pwdofmysql8!"
