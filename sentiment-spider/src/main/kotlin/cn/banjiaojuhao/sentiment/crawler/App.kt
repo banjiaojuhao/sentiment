@@ -4,7 +4,6 @@ import cn.banjiaojuhao.sentiment.crawler.network.DownloaderVerticle
 import cn.banjiaojuhao.sentiment.crawler.persistence.external.StoreConnection
 import cn.banjiaojuhao.sentiment.crawler.persistence.internal.CacheConnection
 import cn.banjiaojuhao.sentiment.crawler.postprocess.RestoreVerticle
-import cn.banjiaojuhao.sentiment.crawler.postprocess.SplitWordsVerticle
 import cn.banjiaojuhao.sentiment.crawler.spider.tieba.TiebaCommentVerticle
 import cn.banjiaojuhao.sentiment.crawler.spider.tieba.TiebaPostVerticle
 import cn.banjiaojuhao.sentiment.crawler.spider.tieba.TiebaThreadVerticle
@@ -42,7 +41,6 @@ fun main() = runBlocking<Unit> {
 
     deployedVerticleIdList.add(vertx.deployVerticleAwait(DownloaderVerticle()))
     deployedVerticleIdList.add(vertx.deployVerticleAwait(RestoreVerticle()))
-    deployedVerticleIdList.add(vertx.deployVerticleAwait(SplitWordsVerticle()))
 
     deployedVerticleIdList.add(vertx.deployVerticleAwait(TiebaThreadVerticle()))
     deployedVerticleIdList.add(vertx.deployVerticleAwait(TiebaPostVerticle()))
