@@ -1,4 +1,4 @@
-import cn.banjiaojuhao.sentiment.gradle.Versions
+import io.github.banjiaojuhao.sentiment.gradle.Versions
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmCompile
 
 

@@ -1,4 +1,4 @@
-import cn.banjiaojuhao.sentiment.gradle.Versions
+import io.github.banjiaojuhao.sentiment.gradle.Versions
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmCompile
 
 
@@ -39,7 +39,7 @@ dependencies {
 }
 
 application {
-    mainClassName = "cn.banjiaojuhao.sentiment.backend.AppKt"
+    mainClassName = "io.github.banjiaojuhao.sentiment.backend.AppKt"
 }
 
 tasks.test {
