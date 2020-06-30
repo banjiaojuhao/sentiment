@@ -42,10 +42,6 @@ class BackendVerticle : CoroutineVerticle() {
         }
     }
 
-    override suspend fun stop() {
-        super.stop()
-        DBConnection.close()
-    }
 
     private suspend fun handlerWrapper(address: String, body: suspend (JsonObject) -> JsonObject) {
         val consumer = vertx.eventBus().consumer<JsonObject>(address)

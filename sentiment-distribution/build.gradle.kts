@@ -16,10 +16,6 @@ dependencies {
     implementation("org.jetbrains.kotlin", "kotlin-reflect", Versions.kotlin)
     implementation("org.jetbrains.exposed", "exposed", Versions.exposed)
 
-    // data extract
-    implementation("org.jsoup", "jsoup", Versions.jsoup)
-    implementation("com.alibaba", "fastjson", Versions.fastJson)
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.10.+")
 
     // data persistence
     implementation("org.mapdb", "mapdb", Versions.mapdb)
@@ -28,9 +24,8 @@ dependencies {
     implementation("mysql", "mysql-connector-java", Versions.mysql)
 
     implementation("io.netty", "netty-transport-native-epoll", Versions.epoll)
+    implementation("io.vertx", "vertx-hazelcast", Versions.hazelcast)
     implementation("io.vertx", "vertx-core", Versions.vertx)
-    implementation("io.vertx", "vertx-web", Versions.vertx)
-    implementation("io.vertx", "vertx-web-client", Versions.vertx)
     implementation("io.vertx", "vertx-lang-kotlin", Versions.vertx)
     implementation("io.vertx", "vertx-lang-kotlin-coroutines", Versions.vertx)
 
@@ -44,7 +39,7 @@ dependencies {
 }
 
 application {
-    mainClassName = "io.github.banjiaojuhao.sentiment.crawler.AppKt"
+    mainClassName = "io.github.banjiaojuhao.sentiment.distribution.AppKt"
 }
 
 tasks.test {

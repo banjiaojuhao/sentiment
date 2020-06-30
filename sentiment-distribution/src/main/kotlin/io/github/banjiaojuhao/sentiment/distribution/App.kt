@@ -1,6 +1,6 @@
-package io.github.banjiaojuhao.sentiment.backend
+package io.github.banjiaojuhao.sentiment.distribution
 
-import io.github.banjiaojuhao.sentiment.backend.persistence.DBConnection
+import io.github.banjiaojuhao.sentiment.distribution.persistence.StoreConnection
 import io.vertx.core.Vertx
 import io.vertx.core.http.HttpMethod
 import io.vertx.core.json.JsonObject
@@ -15,7 +15,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import sun.misc.Signal
 
-
 class MainVerticle : CoroutineVerticle() {
     override suspend fun start() {
         super.start()
@@ -24,11 +23,11 @@ class MainVerticle : CoroutineVerticle() {
         server.requestHandler { request ->
             if (request.method() != HttpMethod.POST) {
                 request.response()
-                        .setStatusCode(405)
-                        .end("Method not Allowed")
+                    .setStatusCode(405)
+                    .end("Method not Allowed")
             } else {
                 launch {
-                    val address = "backend" + request.path().substringAfter("/api").replace('/', '.')
+                    val address = request.path().replace('/', '.')
                     try {
                         val data = awaitEvent<JsonObject> {
                             request.bodyHandler { buffer ->
@@ -38,36 +37,41 @@ class MainVerticle : CoroutineVerticle() {
                         println("request $data on address $address")
                         val result = vertx.eventBus().requestAwait<JsonObject>(address, data)
                         request.response()
-                                .setStatusCode(200)
-                                .putHeader("Content-Type", "application/json;charset=UTF-8")
-                                .end(result.body().toBuffer())
+                            .setStatusCode(200)
+                            .putHeader("Content-Type", "application/json;charset=UTF-8")
+                            .end(result.body().toBuffer())
                     } catch (e: Exception) {
                         request.response()
-                                .setStatusCode(500)
-                                .end(e.message)
+                            .setStatusCode(500)
+                            .end(e.message)
                     }
                 }
             }
         }
-        server.listenAwait(8081)
+        server.listenAwait(8090)
     }
 }
 
 
-fun main(args: Array<String>) = runBlocking<Unit> {
-    val vertx = Vertx.vertx()
-    val backendId = vertx.deployVerticleAwait(BackendVerticle())
-    val mainId = vertx.deployVerticleAwait(MainVerticle())
+fun main() = runBlocking<Unit> {
+    val vertx: Vertx = Vertx.vertx()
+    val deployedVerticleIdList = arrayListOf<String>()
+
+    deployedVerticleIdList.add(vertx.deployVerticleAwait(MainVerticle()))
+    deployedVerticleIdList.add(vertx.deployVerticleAwait(TaskVerticle()))
+
     awaitEvent<Unit> { handler ->
         Signal.handle(Signal("INT")) {
             handler.handle(Unit)
         }
     }
     println("stop program")
-    vertx.undeployAwait(mainId)
-    vertx.undeployAwait(backendId)
+
+    deployedVerticleIdList.asReversed().forEach {
+        vertx.undeployAwait(it)
+    }
+
     vertx.closeAwait()
-    DBConnection.close()
+    StoreConnection.close()
+    return@runBlocking
 }
-
-

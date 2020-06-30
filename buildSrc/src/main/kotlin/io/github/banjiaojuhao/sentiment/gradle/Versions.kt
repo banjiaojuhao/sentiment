@@ -9,13 +9,14 @@ object Versions {
     const val fastJson = "1.2.62"
 
     /** network and IO **/
-    val vertx = "3.8.5"
-    val epoll = "4.1.45.Final"
+    const val vertx = "3.8.5"
+    const val hazelcast = "3.9.1"
+    const val epoll = "4.1.45.Final"
 
     /** database **/
-    val mysql = "8.0.19"
-    val sqlite = "3.30.1"
-    val exposed = "0.17.7"
-    val mapdb = "3.0.8"
-    val konf = "0.22.0"
+    const val mysql = "8.0.19"
+    const val sqlite = "3.30.1"
+    const val exposed = "0.17.7"
+    const val mapdb = "3.0.8"
+    const val konf = "0.22.0"
 }
