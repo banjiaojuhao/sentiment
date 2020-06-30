@@ -28,7 +28,7 @@ class MainVerticle : CoroutineVerticle() {
                     .end("Method not Allowed")
             } else {
                 launch {
-                    val address = request.path().replace('/', '.')
+                    val address = request.path().substringAfter("/").replace('/', '.')
                     try {
                         val data = awaitEvent<JsonObject> {
                             request.bodyHandler { buffer ->

@@ -36,6 +36,7 @@ class TaskVerticle : CoroutineVerticle() {
             wordsIdList.forEach {
                 wordsMap[it[WordsTable.word]] = it[WordsTable.id].value
             }
+            db.commit()
         }
         launch {
             getTask()
@@ -71,12 +72,14 @@ class TaskVerticle : CoroutineVerticle() {
 
     private suspend fun resetRetry() {
         while (isActive) {
-            TaskTable.update({
-                TaskTable.type eq TaskTable.TYPE.SENTIMENT_WORD.toInt() and (
-                    TaskTable.status eq TaskTable.STATUS.PROCESSING.toInt()) and (
-                    TaskTable.timestamp less (System.currentTimeMillis() - 3600_000L))
-            }) {
-                it[status] = TaskTable.STATUS.NOT_PROCESS.toInt()
+            StoreConnection.execute {
+                TaskTable.update({
+                    TaskTable.type eq TaskTable.TYPE.SENTIMENT_WORD.toInt() and (
+                        TaskTable.status eq TaskTable.STATUS.PROCESSING.toInt()) and (
+                        TaskTable.timestamp less (System.currentTimeMillis() - 3600_000L))
+                }) {
+                    it[status] = TaskTable.STATUS.NOT_PROCESS.toInt()
+                }
             }
             delay(60_000L)
         }
@@ -86,13 +89,14 @@ class TaskVerticle : CoroutineVerticle() {
         handlerWrapper("task.get") { params ->
             val count = params.getInteger("count", 1024)
             val timeNow = System.currentTimeMillis()
-            val notExist = TaskTable.status.function("IS_NULL")
+            val notExist = TaskTable.status.function("ISNULL")
             val tasks = StoreConnection.execute {
                 ArticleTable.leftJoin(TaskTable, { id }, { rid })
                     .slice(ArticleTable.id, ArticleTable.content, notExist)
                     .select {
-                        (TaskTable.type eq TaskTable.TYPE.SENTIMENT_WORD.toInt()) and
-                            ((TaskTable.status eq TaskTable.STATUS.NOT_PROCESS.toInt()) or TaskTable.status.isNull())
+                        TaskTable.rid.isNull() or
+                            ((TaskTable.type eq TaskTable.TYPE.SENTIMENT_WORD.toInt()) and
+                                ((TaskTable.status eq TaskTable.STATUS.NOT_PROCESS.toInt())))
                     }.limit(count).toList().apply {
                         this.forEach { result: ResultRow ->
                             if (result[notExist] == 1) {
@@ -116,7 +120,7 @@ class TaskVerticle : CoroutineVerticle() {
             }.map {
                 jsonObjectOf(
                     "id" to it[ArticleTable.id].value,
-                    "sentence" to it[ArticleTable.content]
+                    "text" to it[ArticleTable.content]
                 )
             }
             jsonObjectOf(

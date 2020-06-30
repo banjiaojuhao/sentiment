@@ -53,9 +53,11 @@ class MainVerticle : CoroutineVerticle() {
     private suspend fun main() {
         while (isActive) {
             val tasks = webClient.postAbs("http://121.40.55.44:8090/task/get")
-                .sendJsonObjectAwait(jsonObjectOf())
+                .sendJsonObjectAwait(jsonObjectOf("count" to 1024))
                 .bodyAsJsonObject().getJsonArray("task")
+            println("got task")
             if (tasks.isEmpty) {
+                println("task is empty. sleep.")
                 delay(600_000L)
                 continue
             }
@@ -75,9 +77,9 @@ class MainVerticle : CoroutineVerticle() {
                         it.getInteger("id")!! to it.getJsonArray("words").mapNotNull {
                             it as String
                             if (it.length < 32) {
-                                null
-                            } else {
                                 it
+                            } else {
+                                null
                             }
                         }
                     }.toMap()
@@ -103,6 +105,7 @@ class MainVerticle : CoroutineVerticle() {
             }
             webClient.postAbs("http://121.40.55.44:8090/result/save")
                 .sendJsonObjectAwait(jsonObjectOf("result" to JsonArray(result)))
+            println("saved result")
         }
 
     }
