@@ -16,7 +16,8 @@ fun Transaction.upsertUser(userList: Collection<ZhihuUser>) {
             "on conflict(${ZhihuUserTable.userId.name}) " +
             "do update set " +
             "${ZhihuUserTable.urlToken.name}=excluded.${ZhihuUserTable.urlToken.name}, " +
-            "${ZhihuUserTable.name.name}=excluded.${ZhihuUserTable.name.name};")
+            "${ZhihuUserTable.name.name}=excluded.${ZhihuUserTable.name.name} " +
+            "where excluded.${ZhihuUserTable.urlToken.name}!='';")
     for (user in userList) {
         upsertStmt.setString(1, user.userId)
         upsertStmt.setString(2, user.urlToken)
