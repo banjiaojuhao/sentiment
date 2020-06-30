@@ -16,10 +16,9 @@ import java.util.concurrent.Executors
 
 object DBConnection {
     private val db: Database by lazy {
-        val url = "jdbc:mysql://localhost:3306/sentiment"
+        val url = MyConfig.config[store.mysql.url]
         val dbUser = MyConfig.config[store.mysql.username]
         val dbPassword = MyConfig.config[store.mysql.password]
-//        Database.connect("jdbc:sqlite:data.db", "org.sqlite.JDBC").apply {
         Database
             .connect({ DriverManager.getConnection(url, dbUser, dbPassword) })
             .apply {

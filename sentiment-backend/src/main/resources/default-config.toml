@@ -1,5 +1,6 @@
 # interval formats(day/hour/minute/second): 1.5d/3h/25m/33s
 [store.mysql]
+url = "jdbc:mysql://localhost:3306/sentiment"
 username = "root"
 password = "pwdofmysql8!"
 

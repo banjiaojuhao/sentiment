@@ -8,6 +8,7 @@ import com.uchuhimo.konf.source.toml
 
 object store : ConfigSpec() {
     object mysql : ConfigSpec() {
+        val url by required<String>()
         val username by required<String>()
         val password by required<String>()
     }
