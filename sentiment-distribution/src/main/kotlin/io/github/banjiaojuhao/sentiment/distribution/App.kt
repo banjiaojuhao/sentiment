@@ -7,6 +7,7 @@ import io.vertx.core.json.JsonObject
 import io.vertx.kotlin.core.closeAwait
 import io.vertx.kotlin.core.deployVerticleAwait
 import io.vertx.kotlin.core.eventbus.requestAwait
+import io.vertx.kotlin.core.http.httpServerOptionsOf
 import io.vertx.kotlin.core.http.listenAwait
 import io.vertx.kotlin.core.undeployAwait
 import io.vertx.kotlin.coroutines.CoroutineVerticle
@@ -19,7 +20,7 @@ class MainVerticle : CoroutineVerticle() {
     override suspend fun start() {
         super.start()
 
-        val server = vertx.createHttpServer()
+        val server = vertx.createHttpServer(httpServerOptionsOf(compressionSupported = true))
         server.requestHandler { request ->
             if (request.method() != HttpMethod.POST) {
                 request.response()

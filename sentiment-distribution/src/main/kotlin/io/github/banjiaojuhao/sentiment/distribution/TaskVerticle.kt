@@ -5,11 +5,14 @@ import io.github.banjiaojuhao.sentiment.distribution.persistence.TaskTable
 import io.github.banjiaojuhao.sentiment.persistence.ArticleTable
 import io.github.banjiaojuhao.sentiment.persistence.SentenceWordsTable
 import io.github.banjiaojuhao.sentiment.persistence.WordsTable
+import io.vertx.core.json.JsonArray
 import io.vertx.core.json.JsonObject
 import io.vertx.kotlin.core.json.jsonObjectOf
 import io.vertx.kotlin.coroutines.CoroutineVerticle
 import io.vertx.kotlin.coroutines.awaitBlocking
 import io.vertx.kotlin.coroutines.toChannel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import org.jetbrains.exposed.sql.*
 import org.mapdb.DB
@@ -40,6 +43,9 @@ class TaskVerticle : CoroutineVerticle() {
         launch {
             saveResult()
         }
+        launch {
+            resetRetry()
+        }
     }
 
     override suspend fun stop() {
@@ -60,6 +66,19 @@ class TaskVerticle : CoroutineVerticle() {
                     "message" to e.message
                 ))
             }
+        }
+    }
+
+    private suspend fun resetRetry() {
+        while (isActive) {
+            TaskTable.update({
+                TaskTable.type eq TaskTable.TYPE.SENTIMENT_WORD.toInt() and (
+                    TaskTable.status eq TaskTable.STATUS.PROCESSING.toInt()) and (
+                    TaskTable.timestamp less (System.currentTimeMillis() - 3600_000L))
+            }) {
+                it[status] = TaskTable.STATUS.NOT_PROCESS.toInt()
+            }
+            delay(60_000L)
         }
     }
 
@@ -101,7 +120,7 @@ class TaskVerticle : CoroutineVerticle() {
                 )
             }
             jsonObjectOf(
-                "task" to tasks
+                "task" to JsonArray(tasks)
             )
         }
     }
