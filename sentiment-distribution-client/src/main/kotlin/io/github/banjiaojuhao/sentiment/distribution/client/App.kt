@@ -1,6 +1,7 @@
 package io.github.banjiaojuhao.sentiment.distribution.client
 
 import io.vertx.core.Vertx
+import io.vertx.core.json.DecodeException
 import io.vertx.core.json.JsonArray
 import io.vertx.core.json.JsonObject
 import io.vertx.ext.web.client.WebClient
@@ -52,9 +53,15 @@ class MainVerticle : CoroutineVerticle() {
 
     private suspend fun main() {
         while (isActive) {
-            val tasks = webClient.postAbs("http://121.40.55.44:8090/task/get")
+            val response = webClient.postAbs("http://121.40.55.44:8090/task/get")
                 .sendJsonObjectAwait(jsonObjectOf("count" to 1024))
-                .bodyAsJsonObject().getJsonArray("task")
+            val tasks = try {
+                response.bodyAsJsonObject().getJsonArray("task")
+            } catch (e: DecodeException) {
+                println("failed to decode response to json:")
+                println(response.bodyAsString())
+                return
+            }
             println("got task")
             if (tasks.isEmpty) {
                 println("task is empty. sleep.")

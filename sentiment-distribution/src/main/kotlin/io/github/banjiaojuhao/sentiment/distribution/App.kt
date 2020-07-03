@@ -6,6 +6,7 @@ import io.vertx.core.http.HttpMethod
 import io.vertx.core.json.JsonObject
 import io.vertx.kotlin.core.closeAwait
 import io.vertx.kotlin.core.deployVerticleAwait
+import io.vertx.kotlin.core.eventbus.deliveryOptionsOf
 import io.vertx.kotlin.core.eventbus.requestAwait
 import io.vertx.kotlin.core.http.httpServerOptionsOf
 import io.vertx.kotlin.core.http.listenAwait
@@ -36,7 +37,8 @@ class MainVerticle : CoroutineVerticle() {
                             }
                         }
                         println("request $data on address $address")
-                        val result = vertx.eventBus().requestAwait<JsonObject>(address, data)
+                        val result = vertx.eventBus().requestAwait<JsonObject>(address, data,
+                            deliveryOptionsOf(sendTimeout = 600_000))
                         request.response()
                             .setStatusCode(200)
                             .putHeader("Content-Type", "application/json;charset=UTF-8")
