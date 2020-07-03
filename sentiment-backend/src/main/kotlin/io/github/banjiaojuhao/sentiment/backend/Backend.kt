@@ -3,7 +3,7 @@ package io.github.banjiaojuhao.sentiment.backend
 import io.github.banjiaojuhao.sentiment.backend.config.MyConfig
 import io.github.banjiaojuhao.sentiment.backend.config.getInterval
 import io.github.banjiaojuhao.sentiment.backend.config.login
-import io.github.banjiaojuhao.sentiment.backend.persistence.*
+import io.github.banjiaojuhao.sentiment.backend.persistence.DBConnection
 import io.github.banjiaojuhao.sentiment.persistence.*
 import io.vertx.core.json.JsonArray
 import io.vertx.core.json.JsonObject
@@ -336,8 +336,9 @@ class BackendVerticle : CoroutineVerticle() {
 
             val colCount = Count(ArticleTable.id)
             val colName = ArticleTable.authorName.function("max")
+            var groupCount = 0
             val resultSet = DBConnection.execute {
-                ArticleTable
+                val stmt = ArticleTable
                     .slice(ArticleTable.platform,
                         colName,
                         ArticleTable.authorUrl,
@@ -354,12 +355,14 @@ class BackendVerticle : CoroutineVerticle() {
                                 }
                             }
                     }.groupBy(ArticleTable.platform, ArticleTable.authorUrl)
-                    .orderBy(colCount, SortOrder.DESC)
+                groupCount = stmt.count()
+                stmt.orderBy(colCount, SortOrder.DESC)
                     .limit(limit, page * limit)
                     .toList()
             }
             jsonObjectOf(
                 "code" to 20000,
+                "total" to groupCount,
                 "data" to JsonArray(resultSet.map {
                     jsonObjectOf(
                         "author_name" to it[colName],
