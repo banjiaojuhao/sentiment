@@ -40,6 +40,9 @@ class BackendVerticle : CoroutineVerticle() {
         launch {
             spammer()
         }
+        launch {
+            whitelist()
+        }
     }
 
 
@@ -371,6 +374,35 @@ class BackendVerticle : CoroutineVerticle() {
                         "author_url" to it[ArticleTable.authorUrl]
                     )
                 })
+            )
+        }
+    }
+
+    private suspend fun whitelist() {
+        handlerWrapper("backend.spammer.whitelist") { params ->
+            val action = params.getString("action")
+            val url = params.getString("url")
+            when (action) {
+                "add" -> {
+                    DBConnection.execute {
+                        WhiteListTable.insert {
+                            it[authorUrl] = url
+                        }
+                    }
+                }
+                "remove" -> {
+                    DBConnection.execute {
+                        WhiteListTable.deleteWhere {
+                            WhiteListTable.authorUrl eq url
+                        }
+                    }
+                }
+                else -> {
+                    throw IllegalArgumentException("invalid action $action")
+                }
+            }
+            jsonObjectOf(
+                "code" to 20000
             )
         }
     }

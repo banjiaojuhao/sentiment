@@ -7,6 +7,7 @@
 
 
 ## future todo:
+- annotation to mark backend request handler
 - proxy pool service: 
 Written in golang. Use MITM to resend request through proxies. 
 User can evaluate proxy according to response(status code, response body).
