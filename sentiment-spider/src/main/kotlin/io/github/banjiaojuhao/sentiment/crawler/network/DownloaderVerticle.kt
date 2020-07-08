@@ -120,7 +120,6 @@ class DownloaderVerticle : CoroutineVerticle() {
                         }
                         msg.reply(jsonObjectOf(
                             "status_code" to response.statusCode(),
-                            // todo remove proxy_id
                             "headers" to responseHeaders,
                             "body" to response.bodyAsString(),
                             // todo set real proxy_id
